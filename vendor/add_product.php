@@ -8,20 +8,30 @@ if (!isset($_SESSION['vendor_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['name'];
-    $price = $_POST['price'];
-    $description = $_POST['description'];
-    $vendor_id = $_SESSION['vendor_id'];
+    // Sanitize and assign input values
+    $name = trim($_POST['name'] ?? '');
+    $price = trim($_POST['price'] ?? '');
+    $description = trim($_POST['description'] ?? '');
+    $vendor_id = $_SESSION['vendor_id'] ?? null;
 
-    $stmt = $conn->prepare("INSERT INTO products (name, price, description, vendor_id) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("sssi", $name, $price, $description, $vendor_id);
-
-    if ($stmt->execute()) {
-        $success = "Product added successfully!";
+    // Validate basic input (optional but recommended)
+    if (empty($name) || empty($price) || empty($vendor_id)) {
+        $error = "Please fill out all required fields.";
     } else {
-        $error = "Error adding product.";
+        // Prepare and execute the insert query
+        $stmt = $conn->prepare("INSERT INTO products (name, price, description, vendor_id) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("sssi", $name, $price, $description, $vendor_id);
+
+        if ($stmt->execute()) {
+            $success = "Product added successfully!";
+        } else {
+            $error = "Error adding product: " . $stmt->error;
+        }
+        
+        $stmt->close();
     }
 }
+
 ?>
 
 <!DOCTYPE html>

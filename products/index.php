@@ -20,8 +20,10 @@ $result = $conn->query("SELECT * FROM products");
             <h1 class="text-2xl font-bold text-gray-800">Cosmo Source</h1>
         </div>
         <div class="flex space-x-4">
-            <a href="../auth/userlogin.php" onclick="return confirmLogout();" class="text-purple-700 hover:text-purple-900">Log out</a>
+            <a href="cart.php" class="text-purple-700 hover:text-purple-900 font-medium">🛒 View Cart</a>
+            <a href="../auth/userlogin.php" onclick="return confirmLogout();" class="text-purple-700 hover:text-purple-900 font-medium">Log out</a>
         </div>
+
     </nav>
 
     <script>
@@ -46,6 +48,13 @@ $result = $conn->query("SELECT * FROM products");
                         <h3 class="text-xl font-bold mb-2 text-gray-800"><?= htmlspecialchars($product['name']) ?></h3>
                         <p class="text-gray-600"><strong>Price:</strong> $<?= htmlspecialchars($product['price']) ?></p>
                         <p class="text-gray-500 mt-2 text-sm"><?= htmlspecialchars($product['description']) ?></p>
+                        <form method="POST" action="add_to_cart.php" class="mt-4">
+                            <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+                            <label class="block text-sm text-gray-600 mb-1">Quantity:</label>
+                            <input type="number" name="quantity" min="1" value="1" required class="w-full p-2 border rounded mb-2 bg-gray-100">
+                            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white p-2 rounded">Add to Cart</button>
+                        </form>
+
                     </div>
                 <?php endwhile; ?>
             </div>
